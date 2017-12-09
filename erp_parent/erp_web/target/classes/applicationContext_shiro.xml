@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop.xsd
+		">  
+	<!-- id必须与web.xml中的filter-name节点的内容一致 -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<!-- 安全管理器: shiro核心 -->
+		<property name="securityManager" ref="securityManager"></property>
+		<!-- 认证相关：如果用户没有登陆就访问页面时，就会跳转到登陆页面 -->
+		<property name="loginUrl" value="login.html"></property>
+		<!-- 授权相关：没有权限时，跳转的页面 -->
+		<property name="unauthorizedUrl" value="error.html"></property>
+		<property name="filters">
+			<map>
+				<!-- 替换默认的授权过滤器 -->
+				<entry key="perms" value-ref="myFilter"></entry>
+			</map>
+		</property><!-- 
+		<property name="filterChainDefinitionMap" ref="filterChainDefinitionMap"></property> -->
+		<!-- 定义拦截的规则 -->
+		<property name="filterChainDefinitions">
+			<value>
+				#URL匹配的规则， 第一符合原则
+				#Map集合,key值就是=等号左边，value=右边
+				
+				#对资源文件，放行处理
+				/adminjs/**=anon
+				/css/**=anon
+				/images/**=anon
+				/js/**=anon
+				/ui/**=anon
+				/login.html=anon
+				/login_checkUser.action=anon
+				
+				#标定资源的访问权限, perms默认的授权过滤器，标定的权限是并集，用户必须包含所有标定的权限
+				#执行perm授权前，先执行认证
+				
+				#登陆用户修改密码
+				/emp_updatePwd.action=perms[]
+
+				#商品
+				/goods.html=perms["商品"]
+				/goods_get.action=perms["商品"]
+				/goods_add.action=perms["商品"]
+				/goods_update.action=perms["商品"]
+				/goods_delete.action=perms["商品"]
+				/goods_listByPage.action=perms["商品"]
+
+				#商品类型
+				/goodstype.html=perms["商品类型"]
+				/goodstype_get.action=perms["商品类型"]
+				/goodstype_add.action=perms["商品类型"]
+				/goodstype_update.action=perms["商品类型"]
+				/goodstype_delete.action=perms["商品类型"]
+				/goodstype_listByPage.action=perms["商品类型"]
+
+				#员工
+				/emp.html=perms["员工"]
+				/emp_get.action=perms["员工"]
+				/emp_add.action=perms["员工"]
+				/emp_update.action=perms["员工"]
+				/emp_delete.action=perms["员工"]
+				/emp_listByPage.action=perms["员工"]
+
+				#部门
+				/dep.html=perms["部门"]
+				/dep_get.action=perms["部门"]
+				/dep_add.action=perms["部门"]
+				/dep_update.action=perms["部门"]
+				/dep_delete.action=perms["部门"]
+				/dep_listByPage.action=perms["部门"]
+
+				#供应商及客户
+				/supplier.html=perms["供应商","客户"]
+				/supplier_get.action=perms["供应商","客户"]
+				/supplier_add.action=perms["供应商","客户"]
+				/supplier_update.action=perms["供应商","客户"]
+				/supplier_delete.action=perms["供应商","客户"]
+				/supplier_listByPage.action=perms["供应商","客户"]
+
+				#仓库
+				/store.html=perms[仓库]
+				/store_get.action=perms[仓库]
+				/store_add.action=perms[仓库]
+				/store_update.action=perms[仓库]
+				/store_delete.action=perms[仓库]
+				/store_listByPage.action=perms[仓库]
+
+				#订单
+				/orders.html=perms["我的采购订单","采购订单查询","采购审核","采购确认","采购入库","我的销售订单","销售订单查询","销售订单出库"]
+				/orders_add.action=perms["我的采购订单","我的销售订单"]
+				/orders_myListByPage.action=perms["我的采购订单","我的销售订单"]
+				/orders_listByPage.action=perms["采购订单查询","采购审核","采购确认","采购入库","销售订单查询","销售订单出库"]
+				/orders_doCheck.action=perms["采购审核"]
+				/orders_doStart.action=perms["采购确认"]
+				/orderdetail_doInStore.action=perms["采购入库"]
+				/orderdetail_doOutStore.action=perms["销售订单出库"]
+
+				#库存
+				/storedetail.html=perms["库存查询"]
+				/storedetail_listByPage.action=perms["库存查询"]
+
+				#库存变更记录
+				/storeoper.html=perms["库存变更记录"]
+				/storeoper_listByPage.action=perms["库存变更记录"]
+
+				#统计报表
+				/report_orders.html=perms["销售统计"]
+				/report_order.action=perms["销售统计"]
+				/report_trend.html=perms["销售趋势"]
+				/report_trend.action=perms["销售趋势"]
+
+				#角色设置
+				/role.html=perms["角色设置"]
+				/role_get.action=perms["角色设置"]
+				/role_add.action=perms["角色设置"]
+				/role_update.action=perms["角色设置"]
+				/role_delete.action=perms["角色设置"]
+				/role_listByPage.action=perms["角色设置"]
+
+				#角色权限
+				#/roleMenuSet.html=perms["角色权限设置"]
+				#/role_readRoleMenus.action=perms["角色权限设置"]
+				#/role_updateRoleMenus.action=perms["角色权限设置"]
+
+				#用户角色
+				#/empRoleSet.html=perms["用户角色设置"]
+				#/emp_readEmpRoles.action=perms["用户角色设置"]
+				#/emp_updateEmpRoles.action=perms["用户角色设置"]
+
+				#重置密码
+				/pwd.html=perms["重置密码"]
+				/emp_updatePwd_reset.action=perms["重置密码"]
+
+				#功能引用
+				/emp_listByPage.action=perms["重置密码",]
+				#/emp_list.action=perms["用户角色设置","库存变更记录"]
+
+				/goodstype_list.action=perms["商品"]
+				/goods_list.action=perms["我的采购订单","我的销售订单","库存查询","库存变更记录"]
+
+				/store_mylist.action=perms["采购入库","销售订单出库"]
+				/store_list.action=perms["库存查询","库存变更记录"]
+
+				/supplier_list.action=perms["我的采购订单","我的销售订单"]
+
+				/dep_list.action=perms["员工"]
+
+				#/role_list.action=perms["角色权限设置"]
+				
+				#登陆后才可以访问
+				/**=authc
+			</value>
+		</property>
+	</bean>
+	<!-- 安全管理器 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="erpRealm"></property>
+	</bean>
+	
+	<!-- 自定义realm，实现认证与授权 -->
+	<bean id="erpRealm" class="cn.itcast.erp.realm.ErpRealm">
+		<property name="empBiz" ref="empBiz"></property>
+		<property name="menuBiz" ref="menuBiz"></property>
+		<property name="jedis" ref="jedis"></property>
+	</bean>
+	
+	<bean id="myFilter" class="cn.itcast.erp.filter.MyAuthorizationFilter"></bean>
+	<!-- 	<bean id="filterChainDefinitionMap" class="cn.itcast.erp.factory.FilterChainDefinitionMapFactoryBean">
+		<property name="menuBiz" ref="menuBiz"></property>
+	</bean> -->
+	
+		<!-- 启动shiro注解 -->
+	<bean
+		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+			depends-on="lifecycleBeanPostProcessor" >
+		<!-- 默认使用JDK代理 ，如被代理类没有实现接口，必须使用下列配置开启 cglib代理  -->
+		<property name="proxyTargetClass" value="true" />
+	</bean>	
+	<bean
+		class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+	
+	<!-- 对安全管理器 增强代码 ， spring 后处理器 -->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/> 
+</beans>
+	

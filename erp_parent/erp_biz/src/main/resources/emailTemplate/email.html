@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+table.hovertable {
+	font-family: verdana,arial,sans-serif;
+	font-size:9px;
+	color:#333333;
+	width:100%;
+	border-collapse: collapse;
+}
+table.hovertable th {
+	
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #a9c6c9;
+}
+table.hovertable td.bg {
+	background-color:#ebf2ff;
+}
+
+table.hovertable td {
+	padding: 4px;
+	border:1px solid #95B8E7;
+}
+
+table.hovertable td.noBorderBottom {
+    border-bottom:0px;
+}
+</style>
+</head>
+<body>
+	亲爱的用户：<br />
+	以下商品发生库存预警，请登陆<a href="http://localhost:8080/erp">蓝云ERP旗舰版3.0系统</a>查看
+	<br /><br />
+	<table class="hovertable">
+		<thead>
+			<th>商品编号</th>
+			<th>商品名称</th>
+			<th>库存数量</th>
+			<th>待发货数量</th>
+		</thead>
+		<tbody>
+		<#list storealertList as storealert>
+		<tr>
+			<td>${storealert.uuid}</td>
+			<td>${storealert.name}</td>
+			<td>${storealert.storenum}</td>
+			<td>${storealert.outnum}</td>
+		</tr>
+		</#list>
+		</tbody>
+	</table>
+</body>
+</html>

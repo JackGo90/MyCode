@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/jaxws"	
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+				            http://www.springframework.org/schema/beans/spring-beans.xsd				           
+				            http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+				            
+	<!-- cxf客户端配置，serviceClass是一个接口, 返回的是接口的实现 -->	            
+	<jaxws:client id="waybillClient" address="http://localhost:9090/bos/cxf/waybillWs?wsdl"
+		serviceClass="com.redsun.bos.ws.impl.IWaybillWs"
+	>
+	</jaxws:client>
+	
+</beans>

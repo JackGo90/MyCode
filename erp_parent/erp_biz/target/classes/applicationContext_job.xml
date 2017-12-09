@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd">  
+	
+	<!-- 定义一个任务类 -->
+	<bean id="mailJob" class="cn.itcast.erp.job.MailJob">
+		<property name="mailUtil" ref="mailUtil"></property>
+		<property name="storedetailDao" ref="storedetailDao"></property>
+		<property name="subject" value="后台自动库存预警_[time]"></property>
+		<!-- <property name="content" value="当下有[count]种商品已经库存预警了，请登陆蓝云ERP旗舰版3.0系统查看"></property> -->
+		<property name="to" value="erik2010163@163.com"></property>
+		<property name="freeMarker" ref="freeMarker"></property>
+	</bean>
+	<!-- 任务类描述 -->
+	<bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 调用的目录的对象 -->
+		<property name="targetObject" ref="mailJob"></property>
+		<!-- 调用 的方法名 -->
+		<property name="targetMethod" value="doJob"></property>
+		<!-- 取消并发，单线程来执行, 串行调用 -->
+		<property name="concurrent" value="false"></property>
+	</bean>
+	<!-- 触发器  -->
+	<bean id="jobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="jobDetail"></property>
+		<!-- 七子表达式 -->
+		<property name="cronExpression" value="0/15 * * ? * *"></property>
+	</bean>
+	<!-- 任务调度管理容器
+	<bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" >
+		<property name="triggers">
+			<list>
+				<ref bean="jobTrigger"/>
+			</list>
+		</property>
+	</bean>
+	 -->
+	 
+	 
+	<!-- freeMarker -->
+	<bean id="freeMarker" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
+		<!-- 模板存放的路径 -->
+		<property name="templateLoaderPaths" value="classpath:emailTemplate"></property>
+	</bean>
+</beans>
+	

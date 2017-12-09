@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>蓝云ERP旗舰版3.0</title>
+<link rel="stylesheet" type="text/css" href="ui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="ui/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="css/login.css"/>
+<script type="text/javascript" src="ui/jquery.min.js"></script>
+<script type="text/javascript" src="ui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="ui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="ui/jquery.serializejson.min.js"></script>
+<script type="text/javascript">
+
+function login(){
+	//得到输入的用户名和密码
+	var submitData = $('#loginform').serializeJSON();
+	$.ajax({
+		url : 'login_checkUser.action',//请求的url
+		data : submitData,//提交的数据
+		dataType : 'json',//把响应回来的内容转成json对象
+		type : 'post',//post/get
+		success : function(rtn) {//成功后会调用的方法：参数，响应回来的内容转成json对象
+			if(rtn.success){
+				//跳转到主页
+				location.replace("index.html");
+			}else{
+				$.messager.alert('提示', rtn.message, 'info');
+			}
+		}
+	});
+}
+
+</script>
+</head>
+<body>
+<div class='signup_container'>
+<div class="w-load"><div class="spin"></div></div>
+    <h1 class='signup_title'>蓝云ERP旗舰版3.0</h1>
+    <div id="userInfo">
+    	<div style="float:left; margin-left:40px; height:200px; border:0px solid red"><img src='images/erp.jpg' id='admin'/></div>
+        <div style="float:left; margin-left:40px; height:200px; border:0px solid red">
+            <div id="signup_forms" class="signup_forms clearfix">
+                 <form class="signup_form_form" id="loginform" method="post" >
+                      <div class="form_row first_row">
+                          <label for="signup_email">请输入用户名</label>
+                          <input type="text" name="username" placeholder="请输入用户名" id="signup_name" value="admin" >
+                      </div>
+                      <div class="form_row">
+                          <label for="signup_password">请输入密码</label>
+                          <input type="password" name="pwd" placeholder="请输入密码" id="signup_password" value="admin" >
+                      </div>
+                </form>
+            </div> 
+            <div id="foo"></div>
+            <br/>      
+        </div>
+    </div>
+    
+    
+
+    <div class="login-btn-set"><div class='rem'>记住我</div> <a href='javascript:login()' class='login-btn'></a></div>
+</div>
+
+</body>
+
+
+
+</html>
